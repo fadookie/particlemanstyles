@@ -9,8 +9,9 @@ authors: [Eliot Lash]
 #website:
 
 main: com.eliotlash.particlemanstyles.ParticlemanStyles
+api-version: 1.16
 database: false
-depend: []
+depend: [PlayerParticles]
 
 #  commands:
 #    flagrate:
