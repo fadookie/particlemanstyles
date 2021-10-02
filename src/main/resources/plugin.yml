@@ -8,7 +8,7 @@ author: Eliot Lash
 authors: [Eliot Lash]
 #website:
 
-main: com.eliotlash.particlemanstyles.ParticlemanStyles
+main: com.eliotlash.particlemanstyles.PluginMain
 api-version: 1.16
 database: false
 depend: [PlayerParticles]
