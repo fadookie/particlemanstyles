@@ -1,5 +1,5 @@
 plugins {
-//    id 'com.github.johnrengelman.shadow' version '7.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
     id 'java'
 }
 
@@ -19,9 +19,9 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
     compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly 'dev.esophose:playerparticles:7.19'
 
     implementation 'javax.vecmath:vecmath:1.5.2'
-    implementation 'dev.esophose:playerparticles:7.19'
     implementation "com.eliotlash.molang:molang:${particleman_version}"
     implementation "com.eliotlash.mclib:mclib:${particleman_version}"
     implementation "com.eliotlash.particlelib:particlelib:${particleman_version}"
@@ -31,6 +31,6 @@ test {
     useJUnitPlatform()
 }
 
-jar {
+shadowJar {
     destinationDirectory.set(file("../paper/plugins/"))
 }

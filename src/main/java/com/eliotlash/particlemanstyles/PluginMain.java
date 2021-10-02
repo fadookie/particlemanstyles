@@ -27,20 +27,22 @@ public class PluginMain extends JavaPlugin implements Listener {
     public void onEnable() {
         getLogger().info("onEnable is called!");
 
-        if (Bukkit.getPluginManager().isPluginEnabled("PlayerParticles")) {
-            this.ppAPI = PlayerParticlesAPI.getInstance();
-            getLogger().info("Found Player Particles v" + ppAPI.getVersion());
-            Bukkit.getPluginManager().registerEvents(this, this);
-
-        } else {
-            getLogger().severe("Fatal error: Cannot find PlayerParticles API, perhaps the plugin is not installed or the wrong version is installed.");
+        if (!Bukkit.getPluginManager().isPluginEnabled("PlayerParticles")) {
+            getLogger().severe("Fatal error: PlayerParticles API is not loaded, perhaps the plugin is not installed or the wrong version is installed.");
             return;
         }
 
+        ppAPI = PlayerParticlesAPI.getInstance();
+
         // When you want to access the API, check if the instance is null
-        if (this.ppAPI != null) {
-            // Do stuff with the API here
+        if (ppAPI == null) {
+            getLogger().severe("Fatal error: PlayerParticles API is null, perhaps the plugin is not yet initialized.");
+            return;
         }
+
+        // Do stuff with the API here
+        getLogger().info("Found PlayerParticles:" + ppAPI);
+        Bukkit.getPluginManager().registerEvents(this, this);
     }
 
     @Override
@@ -50,6 +52,7 @@ public class PluginMain extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onParticleStyleRegistration(ParticleStyleRegistrationEvent event) {
+        getLogger().info("onParticleStyleRegistration");
         event.registerStyle(EXAMPLE_STYLE);
         event.registerStyle(BEDROCK_STYLE);
     }

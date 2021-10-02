@@ -67,7 +67,19 @@ public class BedrockParticleStyleEmitter extends BedrockEmitter
     }
 
     @Override
-    public void render(float v) {
+    public void render(float partialTicks) {
+        List<IComponentParticleRenderBase> renders = this.scheme.particleRender;
+        for (BedrockParticle particle : this.particles)
+        {
+            this.setEmitterVariables(partialTicks);
+            this.setParticleVariables(particle, partialTicks);
+        }
+
+        for (IComponentParticleRenderBase component : renders)
+        {
+            component.preRender(this, partialTicks);
+            component.postRender(this, partialTicks);
+        }
     }
 
     @Override
