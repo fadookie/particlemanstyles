@@ -10,6 +10,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,7 @@ public class BedrockParticleStyle implements ParticleStyle {
     public BedrockScheme scheme;
     public String debugSchemeName;
     public BedrockParticleStyleEmitter emitter;
+    private String currentSchemeName = null;
 
     private int step = 0;
     private final int maxStep = 20;
@@ -26,18 +30,37 @@ public class BedrockParticleStyle implements ParticleStyle {
     private final double speed = 0.05;
 
     public BedrockParticleStyle() {
-        Bukkit.getLogger().info("BedrockParticleStyle ctor START");
 //        String schemeJson = "{\"format_version\":\"1.10.0\",\"particle_effect\":{\"description\":{\"identifier\":\"snowstorm:rainbow\",\"basic_render_parameters\":{\"material\":\"particles_alpha\",\"texture\":\"textures/particle/particles\"}},\"curves\":{\"variable.rainbow\":{\"type\":\"catmull_rom\",\"input\":\"variable.particle_random_2\",\"horizontal_range\":1,\"nodes\":[1,0,1,1.18]},\"variable.psize\":{\"type\":\"catmull_rom\",\"input\":\"variable.particle_age\",\"horizontal_range\":\"variable.particle_lifetime\",\"nodes\":[0,0,1,0,0]}},\"components\":{\"minecraft:emitter_initialization\":{\"creation_expression\":\"variable.radius = 2.5;test = 1;\"},\"minecraft:emitter_rate_steady\":{\"spawn_rate\":250,\"max_particles\":500},\"minecraft:emitter_lifetime_looping\":{\"active_time\":2},\"minecraft:emitter_shape_point\":{\"offset\":[\"math.cos(variable.emitter_age * 90) * (2.5-variable.particle_random_2)\",\"math.sin(variable.emitter_age * 90) * (2.5-variable.particle_random_2)\",0]},\"minecraft:particle_lifetime_expression\":{\"max_lifetime\":1.5},\"minecraft:particle_initial_speed\":0,\"minecraft:particle_motion_dynamic\":{\"linear_acceleration\":[0,1,0]},\"minecraft:particle_appearance_billboard\":{\"size\":[\"0.12 * variable.psize\",\"0.12 * variable.psize\"],\"facing_camera_mode\":\"rotate_xyz\",\"uv\":{\"texture_width\":128,\"texture_height\":128,\"uv\":[32,88],\"uv_size\":[8,8]}},\"minecraft:particle_appearance_tinting\":{\"color\":{\"interpolant\":\"variable.rainbow\",\"gradient\":{\"0.0\":\"#d71c1c\",\"0.16\":\"#ffdf00\",\"0.33\":\"#08ff00\",\"0.5\":\"#00ffff\",\"0.67\":\"#0000ff\",\"0.83\":\"#ff00ff\",\"1.0\":\"#e21111\"}}}}}}"; // default rainbow
-        String schemeJson = "{\"format_version\":\"1.10.0\",\"particle_effect\":{\"description\":{\"identifier\":\"snowstorm:rainbow\",\"basic_render_parameters\":{\"material\":\"particles_alpha\",\"texture\":\"textures/particle/particles\"}},\"curves\":{\"variable.rainbow\":{\"type\":\"catmull_rom\",\"input\":\"variable.particle_random_2\",\"horizontal_range\":1,\"nodes\":[1,0,1,1.18]},\"variable.psize\":{\"type\":\"catmull_rom\",\"input\":\"variable.particle_age\",\"horizontal_range\":\"variable.particle_lifetime\",\"nodes\":[0,0,1,0,0]}},\"components\":{\"minecraft:emitter_initialization\":{\"creation_expression\":\"variable.radius = 2.5;\"},\"minecraft:emitter_local_space\":{\"position\":true,\"rotation\":true,\"velocity\":true},\"minecraft:emitter_rate_steady\":{\"spawn_rate\":250,\"max_particles\":500},\"minecraft:emitter_lifetime_looping\":{\"active_time\":2},\"minecraft:emitter_shape_point\":{\"offset\":[\"math.cos(variable.emitter_age * 90) * (2.5-variable.particle_random_2)\",\"math.sin(variable.emitter_age * 90) * (2.5-variable.particle_random_2)\",0]},\"minecraft:particle_lifetime_expression\":{\"max_lifetime\":1.5},\"minecraft:particle_initial_speed\":0,\"minecraft:particle_motion_dynamic\":{\"linear_acceleration\":[0,1,0]},\"minecraft:particle_appearance_billboard\":{\"size\":[\"0.12 * variable.psize\",\"0.12 * variable.psize\"],\"facing_camera_mode\":\"rotate_xyz\",\"uv\":{\"texture_width\":128,\"texture_height\":128,\"uv\":[32,88],\"uv_size\":[8,8]}},\"minecraft:particle_appearance_tinting\":{\"color\":{\"interpolant\":\"variable.rainbow\",\"gradient\":{\"0.0\":\"#ffd71c1c\",\"0.16\":\"#ffffdf00\",\"0.33\":\"#ff08ff00\",\"0.5\":\"#ff00ffff\",\"0.67\":\"#ff0000ff\",\"0.83\":\"#ffff00ff\",\"1.0\":\"#ffe21111\"}}}}}}"; // local position + rotation
-        scheme = BedrockScheme.parse(schemeJson);
-        emitter = new BedrockParticleStyleEmitter();
-        emitter.setScheme(scheme);
-        Bukkit.getLogger().info("BedrockParticleStyle ctor END");
+//        String schemeJson = "{\"format_version\":\"1.10.0\",\"particle_effect\":{\"description\":{\"identifier\":\"snowstorm:rainbow\",\"basic_render_parameters\":{\"material\":\"particles_alpha\",\"texture\":\"textures/particle/particles\"}},\"curves\":{\"variable.rainbow\":{\"type\":\"catmull_rom\",\"input\":\"variable.particle_random_2\",\"horizontal_range\":1,\"nodes\":[1,0,1,1.18]},\"variable.psize\":{\"type\":\"catmull_rom\",\"input\":\"variable.particle_age\",\"horizontal_range\":\"variable.particle_lifetime\",\"nodes\":[0,0,1,0,0]}},\"components\":{\"minecraft:emitter_initialization\":{\"creation_expression\":\"variable.radius = 2.5;\"},\"minecraft:emitter_local_space\":{\"position\":true,\"rotation\":true,\"velocity\":true},\"minecraft:emitter_rate_steady\":{\"spawn_rate\":250,\"max_particles\":500},\"minecraft:emitter_lifetime_looping\":{\"active_time\":2},\"minecraft:emitter_shape_point\":{\"offset\":[\"math.cos(variable.emitter_age * 90) * (2.5-variable.particle_random_2)\",\"math.sin(variable.emitter_age * 90) * (2.5-variable.particle_random_2)\",0]},\"minecraft:particle_lifetime_expression\":{\"max_lifetime\":1.5},\"minecraft:particle_initial_speed\":0,\"minecraft:particle_motion_dynamic\":{\"linear_acceleration\":[0,1,0]},\"minecraft:particle_appearance_billboard\":{\"size\":[\"0.12 * variable.psize\",\"0.12 * variable.psize\"],\"facing_camera_mode\":\"rotate_xyz\",\"uv\":{\"texture_width\":128,\"texture_height\":128,\"uv\":[32,88],\"uv_size\":[8,8]}},\"minecraft:particle_appearance_tinting\":{\"color\":{\"interpolant\":\"variable.rainbow\",\"gradient\":{\"0.0\":\"#ffd71c1c\",\"0.16\":\"#ffffdf00\",\"0.33\":\"#ff08ff00\",\"0.5\":\"#ff00ffff\",\"0.67\":\"#ff0000ff\",\"0.83\":\"#ffff00ff\",\"1.0\":\"#ffe21111\"}}}}}}"; // local position + rotation
+    }
+
+    protected void loadScheme(String schemeFilename) {
+        try {
+            Bukkit.getLogger().info("instance:" + PluginMain.getInstance());
+            File dataFolder = PluginMain.getInstance().getDataFolder();
+            Bukkit.getLogger().info("dataFolder:" + dataFolder);
+            File particlesFolder = new File(dataFolder, "particles");
+            Bukkit.getLogger().info("particlesFolder:" + particlesFolder);
+            File schemeFile = new File(particlesFolder, schemeFilename);
+            Bukkit.getLogger().info("schemeFile:" + schemeFile);
+            String schemeJson = new String(Files.readAllBytes(schemeFile.toPath()));
+            Bukkit.getLogger().info("schemeJson:" + schemeJson);
+            currentSchemeName = schemeFilename;
+            scheme = BedrockScheme.parse(schemeJson);
+            emitter = new BedrockParticleStyleEmitter();
+            emitter.setScheme(scheme);
+        } catch (Exception e) {
+            Bukkit.getLogger().severe("loadScheme exception:" + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
     public List<PParticle> getParticles(ParticlePair particle, Location location) {
 //        Bukkit.getLogger().info("BedrockParticleStyle getParticles START");
+        if (currentSchemeName == null) {
+            loadScheme("rainbow.local.particle.json");
+        }
         emitter.start();
         emitter.update();
         emitter.render(0);

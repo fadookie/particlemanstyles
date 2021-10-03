@@ -4,6 +4,7 @@ import com.eliotlash.particlelib.Settings;
 import com.eliotlash.particlelib.mcwrapper.ResourceLocation;
 import com.eliotlash.particlelib.particles.BedrockScheme;
 import com.eliotlash.particlemanstyles.spigotwrapper.ConversionUtils;
+import dev.esophose.playerparticles.PlayerParticles;
 import dev.esophose.playerparticles.event.ParticleStyleRegistrationEvent;
 import dev.esophose.playerparticles.styles.ParticleStyle;
 import org.bukkit.Bukkit;
@@ -19,13 +20,22 @@ public class PluginMain extends JavaPlugin implements Listener {
         BedrockScheme.setDefaultTexture(new ResourceLocation("minecraft:textures/particle/generic_0.png"));
     }
 
+    private static PluginMain INSTANCE;
     private static final ParticleStyle EXAMPLE_STYLE = new ExampleParticleStyle();
     private static final ParticleStyle BEDROCK_STYLE = new BedrockParticleStyle();
     private PlayerParticlesAPI ppAPI;
 
+    public PluginMain() {
+        INSTANCE = this;
+    }
+
     @Override
     public void onEnable() {
         getLogger().info("onEnable is called!");
+
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdir();
+        }
 
         if (!Bukkit.getPluginManager().isPluginEnabled("PlayerParticles")) {
             getLogger().severe("Fatal error: PlayerParticles API is not loaded, perhaps the plugin is not installed or the wrong version is installed.");
@@ -55,5 +65,9 @@ public class PluginMain extends JavaPlugin implements Listener {
         getLogger().info("onParticleStyleRegistration");
         event.registerStyle(EXAMPLE_STYLE);
         event.registerStyle(BEDROCK_STYLE);
+    }
+
+    public static PluginMain getInstance() {
+        return INSTANCE;
     }
 }
