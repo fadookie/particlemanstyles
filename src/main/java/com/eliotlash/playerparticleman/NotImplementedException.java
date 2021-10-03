@@ -1,4 +1,4 @@
-package com.eliotlash.particlemanstyles;
+package com.eliotlash.playerparticleman;
 
 public class NotImplementedException extends Exception {
 }

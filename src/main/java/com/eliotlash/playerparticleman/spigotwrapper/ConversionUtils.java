@@ -1,4 +1,4 @@
-package com.eliotlash.particlemanstyles.spigotwrapper;
+package com.eliotlash.playerparticleman.spigotwrapper;
 
 import com.eliotlash.particlelib.mcwrapper.*;
 import org.bukkit.World;

@@ -1,16 +1,11 @@
-package com.eliotlash.particlemanstyles.spigotwrapper;
+package com.eliotlash.playerparticleman.spigotwrapper;
 
 import com.eliotlash.particlelib.mcwrapper.*;
-import com.eliotlash.particlemanstyles.NotImplementedException;
-import com.eliotlash.particlemanstyles.spigotwrapper.BlockWrapper;
-import com.eliotlash.particlemanstyles.spigotwrapper.ConversionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class WorldWrapper implements IWorld {
     World world;

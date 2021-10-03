@@ -1,8 +1,7 @@
-package com.eliotlash.particlemanstyles.spigotwrapper;
+package com.eliotlash.playerparticleman.spigotwrapper;
 
 import com.eliotlash.particlelib.mcwrapper.IBlock;
 import com.eliotlash.particlelib.mcwrapper.ResourceLocation;
-import com.eliotlash.particlemanstyles.NotImplementedException;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 

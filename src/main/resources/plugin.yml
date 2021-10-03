@@ -1,4 +1,4 @@
-name: ParticlemanStyles
+name: PlayerParticleMan
 version: 1.0-SNAPSHOT
 description: Bedrock particle loader for Player Particles plugin allowing styles to be authored in JSON or via Snowstorm GUI
 # We could place every author in the authors list, but chose not to for illustrative purposes
@@ -8,12 +8,15 @@ author: Eliot Lash
 authors: [Eliot Lash]
 #website:
 
-main: com.eliotlash.particlemanstyles.PluginMain
+main: com.eliotlash.playerparticleman.PlayerParticleMan
 api-version: 1.16
 database: false
 depend: [PlayerParticles]
 
-#  commands:
+commands:
+  ppmreload:
+    description: Reload particle JSON files.
+    usage: /&lt;command&gt;
 #    flagrate:
 #      description: Set yourself on fire.
 #      aliases: [combust_me, combustMe]

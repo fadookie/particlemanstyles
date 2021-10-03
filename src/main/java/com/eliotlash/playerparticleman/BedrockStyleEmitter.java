@@ -1,8 +1,6 @@
-package com.eliotlash.particlemanstyles;
+package com.eliotlash.playerparticleman;
 
 import com.eliotlash.particlelib.mcwrapper.Size2f;
-import com.eliotlash.mclib.utils.Interpolations;
-import com.eliotlash.particlelib.Settings;
 import com.eliotlash.particlelib.particles.components.IComponentParticleRenderBase;
 import com.eliotlash.particlelib.particles.emitter.BedrockEmitter;
 import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
@@ -16,22 +14,19 @@ import com.eliotlash.particlelib.particles.emitter.BedrockParticle;
 //import net.minecraft.entity.Entity;
 //import net.minecraft.entity.EntityLivingBase;
 //import net.minecraft.util.math.BlockPos;
-import com.eliotlash.particlemanstyles.spigotwrapper.ConversionUtils;
-import com.eliotlash.particlemanstyles.spigotwrapper.WorldWrapper;
+import com.eliotlash.playerparticleman.spigotwrapper.ConversionUtils;
+import com.eliotlash.playerparticleman.spigotwrapper.WorldWrapper;
 import dev.esophose.playerparticles.particles.PParticle;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.util.Vector;
 //import org.lwjgl.opengl.GL11;
 
 //import javax.vecmath.Vector3d;
-import javax.vecmath.Vector3d;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BedrockParticleStyleEmitter extends BedrockEmitter
+public class BedrockStyleEmitter extends BedrockEmitter
 {
     private World concreteWorld;
 

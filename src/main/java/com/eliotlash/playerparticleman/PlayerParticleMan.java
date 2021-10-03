@@ -1,12 +1,10 @@
-package com.eliotlash.particlemanstyles;
+package com.eliotlash.playerparticleman;
 
 import com.eliotlash.particlelib.Settings;
 import com.eliotlash.particlelib.mcwrapper.ResourceLocation;
 import com.eliotlash.particlelib.particles.BedrockScheme;
-import com.eliotlash.particlemanstyles.spigotwrapper.ConversionUtils;
-import dev.esophose.playerparticles.PlayerParticles;
+import com.eliotlash.playerparticleman.spigotwrapper.ConversionUtils;
 import dev.esophose.playerparticles.event.ParticleStyleRegistrationEvent;
-import dev.esophose.playerparticles.manager.ParticleStyleManager;
 import dev.esophose.playerparticles.styles.ParticleStyle;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -16,22 +14,21 @@ import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PluginMain extends JavaPlugin implements Listener {
+public class PlayerParticleMan extends JavaPlugin implements Listener {
     static {
         Settings.setBlockLookupImpl(ConversionUtils::blockLookup);
-        BedrockScheme.setJsonAdapter(new MockBedrockSchemeJsonAdapter()); // this is client render stuff that won't be used
+        BedrockScheme.setJsonAdapter(new DefaultBedrockSchemeJsonAdapter()); // this is client render stuff that won't be used
         BedrockScheme.setDefaultTexture(new ResourceLocation("minecraft:textures/particle/generic_0.png"));
     }
 
-    private static PluginMain INSTANCE;
+    private static PlayerParticleMan INSTANCE;
     private static final ParticleStyle EXAMPLE_STYLE = new ExampleParticleStyle();
     private PlayerParticlesAPI ppAPI;
     private HashMap<String, BedrockParticleStyle> styles = new HashMap<>();
 
-    public PluginMain() {
+    public PlayerParticleMan() {
         INSTANCE = this;
     }
 
@@ -60,21 +57,24 @@ public class PluginMain extends JavaPlugin implements Listener {
         getLogger().info("Found PlayerParticles:" + ppAPI);
         Bukkit.getPluginManager().registerEvents(this, this);
 
-        generateStyles();
+        registerCommands();
+
+        reload();
     }
 
     protected void generateStyles() {
-        File dataFolder = PluginMain.getInstance().getDataFolder();
-        Bukkit.getLogger().info("dataFolder:" + dataFolder);
+        File dataFolder = getDataFolder();
+        Bukkit.getLogger().finest("dataFolder:" + dataFolder);
         File particlesFolder = new File(dataFolder, "particles");
-        Bukkit.getLogger().info("particlesFolder:" + particlesFolder);
+        Bukkit.getLogger().finest("particlesFolder:" + particlesFolder);
         File[] directoryListing = particlesFolder.listFiles();
         if (directoryListing != null) {
             for (File schemeFile : directoryListing) {
                 try {
-                    Bukkit.getLogger().info("schemeFile:" + schemeFile);
+                    if (!schemeFile.getName().endsWith(".json")) continue;
+                    Bukkit.getLogger().info("loading schemeFile:" + schemeFile);
                     String schemeJson = new String(Files.readAllBytes(schemeFile.toPath()));
-                    Bukkit.getLogger().info("schemeJson:" + schemeJson);
+                    Bukkit.getLogger().finest("schemeJson:" + schemeJson);
                     BedrockScheme scheme = BedrockScheme.parse(schemeJson);
                     BedrockParticleStyle bedrockParticleStyle = new BedrockParticleStyle(schemeFile.getName(), scheme);
                     styles.put(schemeFile.getName(), bedrockParticleStyle);
@@ -86,6 +86,15 @@ public class PluginMain extends JavaPlugin implements Listener {
         }
     }
 
+    protected void registerCommands() {
+        this.getCommand("ppmreload").setExecutor(new ReloadCommand());
+    }
+
+    public void reload() {
+        generateStyles();
+        getLogger().info("Reloaded particle data.");
+    }
+
     @Override
     public void onDisable() {
         getLogger().info("onDisable is called!");
@@ -93,6 +102,7 @@ public class PluginMain extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onParticleStyleRegistration(ParticleStyleRegistrationEvent event) {
+        getLogger().info("onParticleStyleRegistration registering example style");
         event.registerStyle(EXAMPLE_STYLE);
         for (BedrockParticleStyle style : styles.values()) {
             getLogger().info("onParticleStyleRegistration registering:" + style.schemeName);
@@ -100,7 +110,7 @@ public class PluginMain extends JavaPlugin implements Listener {
         }
     }
 
-    public static PluginMain getInstance() {
+    public static PlayerParticleMan getInstance() {
         return INSTANCE;
     }
 }
