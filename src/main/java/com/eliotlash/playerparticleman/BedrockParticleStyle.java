@@ -1,11 +1,15 @@
 package com.eliotlash.playerparticleman;
 
+import com.eliotlash.particlelib.mcwrapper.Size2f;
 import com.eliotlash.particlelib.particles.BedrockScheme;
+import dev.esophose.playerparticles.api.PlayerParticlesAPI;
 import dev.esophose.playerparticles.particles.PParticle;
 import dev.esophose.playerparticles.particles.ParticlePair;
 import dev.esophose.playerparticles.styles.ParticleStyle;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -19,6 +23,8 @@ public class BedrockParticleStyle implements ParticleStyle {
         this.scheme = scheme;
         emitter = new BedrockStyleEmitter();
         emitter.setScheme(scheme);
+        // Set target to default player AABB for bounding box shape emitter
+        emitter.setTarget(new Size2f(0.6f, 1.8f, null), null);
     }
 
 
@@ -34,6 +40,9 @@ public class BedrockParticleStyle implements ParticleStyle {
 
     @Override
     public void updateTimers() {
+//        Player p = (Player)Bukkit.getServer().getOnlinePlayers().toArray()[0];
+//        PlayerParticleMan.getInstance().getLogger().info("player aabb w:" + p.getBoundingBox().getWidthX() + " h:" + p.getBoundingBox().getHeight());
+//        emitter.setTarget(new Size2f((float)p.getBoundingBox().getWidthX(), (float)p.getBoundingBox().getHeight(), null), null);
         emitter.update();
         emitter.render(0);
         emitter.running = emitter.sanityTicks < 2;
@@ -52,6 +61,11 @@ public class BedrockParticleStyle implements ParticleStyle {
     @Override
     public String getInternalName() {
         return schemeName;
+    }
+
+    @Override
+    public String getName() {
+        return scheme.identifier;
     }
 
     @Override

@@ -92,6 +92,7 @@ public class PlayerParticleMan extends JavaPlugin implements Listener {
     }
 
     public void reload() {
+        styles.clear();
         generateStyles();
         getLogger().info("Reloaded particle data.");
     }
