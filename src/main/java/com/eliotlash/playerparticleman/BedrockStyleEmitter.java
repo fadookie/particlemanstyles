@@ -23,12 +23,16 @@ import org.bukkit.entity.Entity;
 //import org.lwjgl.opengl.GL11;
 
 //import javax.vecmath.Vector3d;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class BedrockStyleEmitter extends BedrockEmitter
 {
     private World concreteWorld;
+    public HashSet<BedrockParticle> alreadySpawnedParticles = new HashSet<>();
 
     public void setTarget(Entity target)
     {
@@ -87,10 +91,32 @@ public class BedrockStyleEmitter extends BedrockEmitter
     }
 
     public List<PParticle> getPParticles(Location location) {
-        return this.particles
+        List<PParticle> pParticles = particles
                 .stream()
-                .map(particle -> new PParticle(location, particle.position.x, particle.position.y, particle.position.z, 0))
+                .filter(particle -> !alreadySpawnedParticles.contains(particle))
+                .map(particle -> new PParticle(
+                        location.clone().add(particle.position.x, particle.position.y, particle.position.z),
+                        0, 0, 0,
+//                        particle.acceleration.x,
+//                        particle.acceleration.y,
+//                        particle.acceleration.z,
+                        particle.speed.length() * 0.025f // Eyeballed this scalar to get it to look similar to Snowstorm
+                ))
                 .collect(Collectors.toList());
+        // We can't move particles from a plugin so we need to immediately filter out the ones we're rendering to prevent them from re-spawning next update
+        alreadySpawnedParticles.addAll(particles);
+        return pParticles;
+    }
+
+    public void postUpdate() {
+        Iterator it = this.alreadySpawnedParticles.iterator();
+
+        while(it.hasNext()) {
+            BedrockParticle particle = (BedrockParticle)it.next();
+            if(particle.dead) {
+                it.remove();
+            }
+        }
     }
 
 //

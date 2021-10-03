@@ -24,7 +24,8 @@ public class PlayerParticleMan extends JavaPlugin implements Listener {
     }
 
     private static PlayerParticleMan INSTANCE;
-    private static final ParticleStyle EXAMPLE_STYLE = new ExampleParticleStyle();
+    private static final ParticleStyle EXAMPLE_STYLE_CIRCLE_SPIN = new ExampleParticleStyleCircleSpin();
+    private static final ParticleStyle EXAMPLE_STYLE_LINE_MOVE = new ExampleParticleStyleLineMove();
     private PlayerParticlesAPI ppAPI;
     private HashMap<String, BedrockParticleStyle> styles = new HashMap<>();
 
@@ -102,8 +103,9 @@ public class PlayerParticleMan extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onParticleStyleRegistration(ParticleStyleRegistrationEvent event) {
-        getLogger().info("onParticleStyleRegistration registering example style");
-        event.registerStyle(EXAMPLE_STYLE);
+        event.registerStyle(EXAMPLE_STYLE_CIRCLE_SPIN);
+        event.registerStyle(EXAMPLE_STYLE_LINE_MOVE);
+        getLogger().info("onParticleStyleRegistration registered example styles");
         for (BedrockParticleStyle style : styles.values()) {
             getLogger().info("onParticleStyleRegistration registering:" + style.schemeName);
             event.registerStyle(style);

@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExampleParticleStyle implements ParticleStyle {
+public class ExampleParticleStyleCircleSpin implements ParticleStyle {
 
     private int step = 0;
     private final int maxStep = 20;
@@ -45,7 +45,7 @@ public class ExampleParticleStyle implements ParticleStyle {
 
     @Override
     public String getInternalName() {
-        return "test";
+        return "aaexamplecirclespin";
     }
 
     @Override
