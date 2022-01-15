@@ -11,18 +11,22 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BedrockParticleStyle implements ParticleStyle {
     public BedrockScheme scheme;
     public String schemeName;
     public BedrockStyleEmitter emitter;
+    public Map<String, String> variables = new HashMap<String, String>();
 
     public BedrockParticleStyle(String schemeName, BedrockScheme scheme) {
         this.schemeName = schemeName;
         this.scheme = scheme;
         emitter = new BedrockStyleEmitter();
         emitter.setScheme(scheme);
+        emitter.parseVariables(this.variables);
         // Set target to default player AABB for bounding box shape emitter
         emitter.setTarget(new Size2f(0.6f, 1.8f, null), null);
     }
